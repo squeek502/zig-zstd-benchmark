@@ -1,0 +1,7 @@
+.zig-cache
+.venv
+zig-out
+out
+zstd
+data_compressed
+data_raw
