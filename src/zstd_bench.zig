@@ -78,6 +78,11 @@ pub fn main() !void {
     var raw_dir = try std.fs.cwd().openDir(path_raw, .{ .iterate = true });
     defer raw_dir.close();
 
+    std.fs.cwd().makeDir(path.dirname(path_csv).?) catch |err| switch (err) {
+        error.PathAlreadyExists => {},
+        else => return err,
+    };
+
     std.debug.print("Decompression started for {s}:\n", .{path_comp});
 
     const levels = try listSubdirs(allocator, comp_dir);
