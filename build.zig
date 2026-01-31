@@ -31,6 +31,19 @@ pub fn build(b: *std.Build) void {
 
     b.installArtifact(exe); // Actually install compiled unit
 
+    const single_exe = b.addExecutable(.{
+        .name = "zstd_single",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/zstd_single.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = &.{
+                .{ .name = "libzstd", .module = libzstd_mod },
+            },
+        }),
+    });
+    b.installArtifact(single_exe);
+
     const run_exe = b.addRunArtifact(exe); // Create run step
     const run_step = b.step("run", "Run the application"); // Create new step in CLI called "run"
     run_step.dependOn(&run_exe.step); // Add actual run step into CLI's step
@@ -42,7 +55,7 @@ pub fn build(b: *std.Build) void {
         .imports = &.{
             .{ .name = "libzstd", .module = libzstd_mod },
         },
-    })});
+    }) });
 
     const run_tests = b.addRunArtifact(tests);
     const test_step = b.step("test", "Run the tests");
